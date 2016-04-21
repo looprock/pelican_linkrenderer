@@ -9,7 +9,7 @@ import re
 # sys.setdefaultencoding('utf8')
 
 
-debug = False
+debug = True
 
 # the slideshare oembed API can be REALLY slow
 timeout = 20.0
@@ -29,7 +29,12 @@ def gettitle(link):
             html = bs4.BeautifulSoup(r.text, "lxml")
             t = html.title.text
             v = t.strip()
+            bug("Title: %s")
+        else:
+            bug("status code: %s" % str(r.status_code))
+            bug(r.content)
     except:
+            bug("Unable to get title")
             v = None
     return v
 
@@ -85,10 +90,9 @@ def process_slideshare(link):
 def process_youtube(link):
     """Embed links from youtube."""
     try:
-        v = ""
-        if gettitle(link):
-            v += "**%s**\n" % gettitle(link)
-            v += " "
+        googledicks = "[ REPLACE ME - GOOGLE is a bunch of dicks who won't let me get titles of videos automagically ]"
+        v += "**%s**\n" % googledicks
+        v += " "
         x = re.match(r'^(.*)?v=([A-Za-z0-9_-]+)(.*)', link)
         bug('youtube ID: %s' % x.group(2))
         v += ".. youtube:: %s\n" % x.group(2)
