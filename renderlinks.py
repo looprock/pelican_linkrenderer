@@ -9,7 +9,7 @@ import re
 # sys.setdefaultencoding('utf8')
 
 
-debug = True
+debug = False
 
 # the slideshare oembed API can be REALLY slow
 timeout = 20.0
@@ -90,10 +90,12 @@ def process_slideshare(link):
 def process_youtube(link):
     """Embed links from youtube."""
     try:
+        v = ""
         googledicks = "[ REPLACE ME - GOOGLE is a bunch of dicks who won't let me get titles of videos automagically ]"
         v += "**%s**\n" % googledicks
         v += " "
         x = re.match(r'^(.*)?v=([A-Za-z0-9_-]+)(.*)', link)
+        bug(x)
         bug('youtube ID: %s' % x.group(2))
         v += ".. youtube:: %s\n" % x.group(2)
         v += " \n"
