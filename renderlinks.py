@@ -4,6 +4,33 @@ import requests
 import bs4
 import sys
 import re
+import os
+
+from apiclient.discovery import build
+from apiclient.errors import HttpError
+from oauth2client.tools import argparser
+from random import choice
+from string import ascii_uppercase
+
+
+# Set DEVELOPER_KEY to the API key value from the APIs & auth > Registered apps
+# tab of
+#   https://cloud.google.com/console
+# Please ensure that you have enabled the YouTube Data API for your project.
+DEVELOPER_KEY = os.environ['DEVELOPER_KEY']
+YOUTUBE_API_SERVICE_NAME = "youtube"
+YOUTUBE_API_VERSION = "v3"
+
+
+def youtube_search(vid):
+    """Search youtube."""
+    youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=DEVELOPER_KEY)
+    search_response = youtube.videos().list(
+        id=vid,
+        part="snippet"
+    ).execute()
+
+    return search_response['items'][0]['snippet']['title']
 
 # reload(sys)
 # sys.setdefaultencoding('utf8')
@@ -90,13 +117,12 @@ def process_slideshare(link):
 def process_youtube(link):
     """Embed links from youtube."""
     try:
-        v = ""
-        googledicks = "[ REPLACE ME - GOOGLE is a bunch of dicks who won't let me get titles of videos automagically ]"
-        v += "**%s**\n" % googledicks
-        v += " "
         x = re.match(r'^(.*)?v=([A-Za-z0-9_-]+)(.*)', link)
         bug(x)
         bug('youtube ID: %s' % x.group(2))
+        v = ""
+        v += "**%s**\n" % youtube_search(x.group(2))
+        v += " "
         v += ".. youtube:: %s\n" % x.group(2)
         v += " \n"
         v += "|  \n"
